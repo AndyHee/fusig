@@ -15,7 +15,7 @@ Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it acc
 
   fusig.sh [argument]
   
-  Options:
+    Options:
   
       -u		update Friendica"
       -l		update Friendica and log progress"
@@ -30,4 +30,4 @@ Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it acc
       -e		configure script"
       -h 		display this help and exit"
   
-  Examples: 'fusig.sh -u' or 'fusig.sh -u master -B'
+  Examples: `fusig.sh -u` or `fusig.sh -u master -B`
