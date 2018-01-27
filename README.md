@@ -17,17 +17,17 @@ Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it acc
   
     Options:
   
-      -u		update Friendica"
-      -l		update Friendica and log progress"
+      -u		update Friendica
+      -l		update Friendica and log progress
   
-          Parameter, override branch setting:"
+          Parameter, override branch setting:
             master
             develop
   
-      -B		update database structure"
-      -f 		display your Friendica version"
-      -c		display script configuration"
-      -e		configure script"
-      -h 		display this help and exit"
+      -B		update database structure
+      -f 		display your Friendica version
+      -c		display script configuration
+      -e		configure script
+      -h 		display this help and exit
   
   Examples: `fusig.sh -u` or `fusig.sh -u master -B`
