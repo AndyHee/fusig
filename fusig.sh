@@ -22,7 +22,7 @@ friendica=/var/www/friendica/ # Set path to your Friendica installtion.
 addon=/var/www/friendica/addon/ # Set path to folder called "addon".
 user=www-data # Set user that has permissions for the folder called "vendor".
 logfile=/var/log/fusig.log # Set log path and name.
-editor=vim #sensible-editor # Set editor for configuring this file
+editor=sensible-editor # Set editor for configuring this file
 
 #	END OF CONFIGURATION
 #==============================================================================
