@@ -5,7 +5,7 @@ A bash script for administrators of Friendica Communications Servers to update a
 
 ### Installation
 
-Copy [script](https://github.com/AndyHee/fusig/blob/master/fusig.sh) to system, place in suitable location `mv fusig.sh /usr/local/bin/` and make it executable with `chmod +x fusig.sh`.
+Copy [script](https://github.com/AndyHee/fusig/blob/master/fusig.sh) to system `wget https://raw.githubusercontent.com/AndyHee/fusig/master/fusig.sh', place in suitable location `mv fusig.sh /usr/local/bin/` and make it executable with `chmod +x fusig.sh`.
 
 ### Configuration
 
