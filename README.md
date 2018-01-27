@@ -3,18 +3,20 @@ Friendica Update Script for Installations via Github
 
 A bash script for administrators of Friendica Communications Servers to update an existing installation via github. The script also allows to effortlessly switch branches, check version number, and update the server’s database structure.
 
-###Installation
+### Installation
 
-Copy script to system (e.g. /usr/local/bin/) and make it executable with [code]chmod +x fusig.sh[/code].
+Copy script to system (e.g. /usr/local/bin/) and make it executable with `chmod +x fusig.sh`.
 
-###Configuration
+### Configuration
 
-Run [code]fusig.sh -c[/code] to see current configuration and [code]fusig.sh -e[/code] to alter it accordingly.
+Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it accordingly.
 
-####Usage
+### Usage
 
-  fusig.sh [argument]"
-  Options:"
+  fusig.sh [argument]
+  
+  Options:
+  
       -u		update Friendica"
       -l		update Friendica and log progress"
   
