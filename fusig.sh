@@ -22,7 +22,6 @@ friendica=/var/www/friendica/ # Set path to your Friendica installtion.
 addon=/var/www/friendica/addon/ # Set path to folder called "addon".
 user=www-data # Set user that has permissions for the folder called "vendor".
 logfile=/var/log/fusig.log # Set log path and name.
-editor=nano # mcedit vim #Set editor for configuring this file
 
 #	END OF CONFIGURATION
 #==============================================================================
@@ -63,7 +62,7 @@ if  [[ $1 = "-c" ]]; then # display configure
 fi
 
 if  [[ $1 = "-e" ]]; then #configure
-  /bin/sh -c "$editor $0"
+  /bin/sh -c "${EDITOR:-vi} $0"
   exit 0
 fi
 
@@ -111,8 +110,6 @@ cd $friendica # update via git
 echo "[$(date "+%a %d %b %T")] Switching core to branch '$branch'..."
 git checkout $branch | print
 echo "[$(date "+%a %d %b %T")] Updating Friendica core..."
-###git fetch upstream # for getting own fork
-###git merge upstream/$branch
 git pull
 cd $addon
 echo "[$(date "+%a %d %b %T")] Switching addons to branch '$branch'..."
@@ -131,11 +128,9 @@ if  [[ $2 = "-B" ]]; then # update db structure
   else
     /bin/sh -c "scripts/dbstructure.php update"
   fi
-  echo "[$(date "+%a %d %b %T")] All done."
-  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
-  exit 0
-else
-  echo "[$(date "+%a %d %b %T")] All done."
-  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
 fi
+
+echo "[$(date "+%a %d %b %T")] All done."
+echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
+
 exit 0
