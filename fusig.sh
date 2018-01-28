@@ -7,9 +7,7 @@
 #
 #	DESCRIPTION:  	Updates Friendica installation.
 #			Copy script to suitable location and make it executable.
-#			Adjust the configurations below accordingly.
-#			Call script manually or automatically via a cron job.
-#			E.g. 33 03 * * * /usr/local/bin/fusig.sh -l
+#			Adjust the configurations below as needed.
 #
 # 	REQUIREMENTS: 	git and working Friendica installation via github
 #
