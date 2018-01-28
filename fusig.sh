@@ -25,7 +25,6 @@ logfile=/var/log/fusig.log # Set log path and name.
 #==============================================================================
 
 if  [[ $1 = "-h" || $1 = "--help" ]]; then #help
-  echo "FUSIG - 1.0 (2018)"
   echo "Usage:	fusig.sh [argument]"
   echo "Options:"
   echo
