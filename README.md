@@ -5,11 +5,11 @@ A bash script for administrators of Friendica Communications Servers to update a
 
 ### Installation
 
-Copy [script](https://github.com/AndyHee/fusig/blob/master/fusig.sh) to system `wget https://raw.githubusercontent.com/AndyHee/fusig/master/fusig.sh`, place in suitable location `mv fusig.sh /usr/local/bin/` and make it executable with `chmod +x fusig.sh`.
+Copy [script](https://raw.githubusercontent.com/AndyHee/fusig/master/fusig.sh) to system, place in suitable location `mv fusig.sh /usr/local/bin/` and make it executable with `chmod +x fusig.sh`.
 
 ### Configuration
 
-Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it accordingly.
+Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it if needed.
 
 ### Usage
 
@@ -17,17 +17,12 @@ Run `fusig.sh -c` to see current configuration and `fusig.sh -e` to alter it acc
   
     Options:
   
-      -u		update Friendica
-      -l		update Friendica and log progress
-  
-          Parameter, override branch setting:
-            master
-            develop
+      -u [branch]	override branch setting
   
       -B		update database structure
-      -f 		display your Friendica version
+      -f 		display Friendica versions
       -c		display script configuration
       -e		configure script
       -h 		display this help and exit
   
-  Examples: `fusig.sh -u` or `fusig.sh -u master -B`
+  Examples: `fusig.sh` or `fusig.sh -u master`
