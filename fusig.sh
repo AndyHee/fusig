@@ -3,11 +3,13 @@
 #
 #	FILE:  		fusig.sh
 #
-#       USAGE:  	fusig.sh [-u -l master develop -B -f -c -C -h]
+#       USAGE:  	fusig.sh [-u [branch] -B -f -c -e -h]
 #
 #	DESCRIPTION:  	Updates Friendica installation.
 #			Copy script to suitable location and make it executable.
-#			Adjust the configurations below as needed.
+#			Adjust the configurations below accordingly.
+#			Call script manually or automatically via a cron job.
+#			E.g. 00 04 * * * /usr/local/bin/fusig.sh
 #
 # 	REQUIREMENTS: 	git and working Friendica installation via github
 #
@@ -16,10 +18,10 @@
 #	CONFIGURE SETTINGS
 
 branch=develop # Set your branch, e.g. master or develop
-friendica=/var/www/friendica/ # Set path to your Friendica installtion.
-addon=/var/www/friendica/addon/ # Set path to folder called "addon".
-user=www-data # Set user that has permissions for the folder called "vendor".
-logfile=/var/log/fusig.log # Set log path and name.
+FPATH=/var/www/friendica # Set path to your Friendica installation. Ensure no trailing slash.
+CUSER=www-data # Set user that has permissions for the folder called "vendor".
+
+LOCKFILE=/tmp/fusig.lock # Alter this if you don't have permission for "/tmp".
 
 #	END OF CONFIGURATION
 #==============================================================================
@@ -28,13 +30,7 @@ if  [[ $1 = "-h" || $1 = "--help" ]]; then #help
   echo "Usage:	fusig.sh [argument]"
   echo "Options:"
   echo
-  echo "	-u		update Friendica"
-  echo "	-l		update Friendica and log progress"
-  echo
-  echo "	Parameter, override branch setting:"
-  echo
-  echo "		master"
-  echo "		develop"
+  echo "	-u [branch]	override branch setting"
   echo
   echo "	-B		update database structure"
   echo "	-f 		display your Friendica version"
@@ -42,7 +38,7 @@ if  [[ $1 = "-h" || $1 = "--help" ]]; then #help
   echo "	-e		configure script"
   echo "	-h 		display this help and exit"
   echo
-  echo "Examples: 'fusig.sh -u' or 'fusig.sh -u master -B'"
+  echo "Examples: 'fusig.sh ' or 'fusig.sh -u master"
   exit 0
 fi
 
@@ -50,11 +46,9 @@ if  [[ $1 = "-c" ]]; then # display configure
   echo "Script configurations"
   echo
   echo "	Branch:		$branch"
-  echo "	Friendica path:	$friendica"
-  echo "	Addon path:	$addon"
-  echo "	Composer user:	$user"
-  echo "	Logfile:	$logfile"
-  echo "	Editor:		$editor"
+  echo "	Friendica path:	$FPATH"
+  echo "	Composer user:	$CUSER"
+  echo "	Lockfile:	$LOCKFILE"
   exit 0
 fi
 
@@ -63,71 +57,73 @@ if  [[ $1 = "-e" ]]; then #configure
   exit 0
 fi
 
-if  [[ $2 = "master" || $3 = "master" ]]; then # override configuration
-  branch=master
-fi
-
-if  [[ $2 = "develop" || $3 = "develop" ]]; then
-  branch=develop
-fi
-
-if  [[ $1 = "-B" ]]; then #update db
-  cd $friendica
-  echo "Updating database. This may take some time..."
-  if  [[ $branch = "master" ]]; then
-    /bin/sh -c "php util/db_update.php"
-  else
-    /bin/sh -c "scripts/dbstructure.php update"
-  fi
-  echo "All done."
-  exit 0
-fi
-
 if  [[ $1 = "-f" ]]; then # Friendica version
-  cd $friendica
-  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
-  exit 0
-fi
+  cd $FPATH
+  echo "You're currently on Friendica branch..."
+  echo "$(git branch)"
+  echo "	Version number:  ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
+  echo
+  echo "Checking available versions on github repository..."
+  echo
+  if command -v curl >/dev/null 2>&1 ; then
+    echo "Friendica branch 'master': $(curl -# https://raw.githubusercontent.com/friendica/friendica/master/VERSION)"
+    echo
+    echo "Friendica branch 'develop': $(curl -# https://raw.githubusercontent.com/friendica/friendica/develop/VERSION)"
 
-exec 3>&1 4>&2	# setting verbose
-if  [[ $1 = "-u" ]]; then
-  exec 2>&1
-fi
-
-if  [[ $1 = "-l" || $1 = "-u" && $2 = "-l" ]]; then # loging
-  exec 1>>$logfile 2>&1
-fi
-
-if  ! [[ $1 = "-u" || $1 = "-l" ]]; then # neither
-  echo  "Try 'fusig.sh  --help' for more information."
-  exit 0
-fi
-
-cd $friendica # update via git
-echo "[$(date "+%a %d %b %T")] Switching core to branch '$branch'..."
-git checkout $branch | print
-echo "[$(date "+%a %d %b %T")] Updating Friendica core..."
-git pull
-cd $addon
-echo "[$(date "+%a %d %b %T")] Switching addons to branch '$branch'..."
-git checkout $branch | print
-echo "[$(date "+%a %d %b %T")] Updating Friendica addons..."
-git pull
-cd ..
-echo "[$(date "+%a %d %b %T")] Installing with composer..."
-su $user -s /bin/sh -c "util/composer.phar install"
-
-
-if  [[ $2 = "-B" ]]; then # update db structure
-  echo "[$(date "+%a %d %b %T")] Updating database. This may take some time..."
-  if  [[ $branch = "master" ]]; then
-    /bin/sh -c "php util/db_update.php"
   else
-    /bin/sh -c "scripts/dbstructure.php update"
+    if command -v wget >/dev/null 2>&1 ; then
+      echo "Friendica branch 'master':	$(wget -O - -o /dev/null http://raw.githubusercontent.com/friendica/friendica/master/VERSION --show-progress)"
+      echo
+      echo "Friendica branch 'develop':	$(wget -O - -o /dev/null http://raw.githubusercontent.com/friendica/friendica/develop/VERSION --show-progress)"
+    else
+      echo "[Error] 'curl' or 'wget' not found on your system."
+    fi
+  fi
+  exit 0
+fi
+
+if [[ $1 = "-u" ]]; then
+  if  [[ $1 = "-u" && $2 = "" ]]; then # Check before override configuration
+    echo  "Try 'fusig.sh  --help' for more information."
+    exit 0
+  else
+    branch="$2"
   fi
 fi
 
-echo "[$(date "+%a %d %b %T")] All done."
-echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
+(
+  flock -e 200 #Set lock
+
+  cd $FPATH
+
+  if  [[ $1 = "-B" ]]; then # update db structure
+    echo "Updating database. This may take some time..."
+    if  [[ $branch = "master" ]]; then
+      /bin/sh -c "php util/db_update.php"
+    else
+      /bin/sh -c "scripts/dbstructure.php update"
+    fi
+    exit 0
+  fi
+
+  echo "Switching core to branch '$branch'..."
+  git checkout $branch | print
+  echo "Updating Friendica core..."
+  #git fetch upstream
+  #git merge upstream/$branch
+  git pull
+  cd $FPATH/addon
+  echo "Switching addons to branch '$branch'..."
+  git checkout $branch | print
+  echo "Updating Friendica addons..."
+  git pull
+  cd ..
+  echo "Installing with composer..."
+  su $CUSER -s /bin/sh -c "util/composer.phar install"
+
+  echo "All done, $(date "+%a %d %b %T")"
+  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
+
+) 200>${LOCKFILE}
 
 exit 0
