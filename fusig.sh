@@ -33,7 +33,7 @@ if  [[ $1 = "-h" || $1 = "--help" ]]; then #help
   echo "	-u [branch]	override branch setting"
   echo
   echo "	-B		update database structure"
-  echo "	-f 		display your Friendica version"
+  echo "	-f 		display Friendica versions"
   echo "	-c		display script configuration"
   echo "	-e		configure script"
   echo "	-h 		display this help and exit"
