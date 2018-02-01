@@ -83,7 +83,7 @@ if  [[ $1 = "-f" ]]; then # Friendica version
 fi
 
 if [[ $1 = "-u" ]]; then
-  if  [[ $1 = "-u" && $2 = "" ]]; then # Check before override configuration
+  if  [[ $1 = "-u" && $2 = "-"* ]]; then # Check before override configuration
     echo  "Try 'fusig.sh  --help' for more information."
     exit 0
   else
