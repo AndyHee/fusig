@@ -17,7 +17,7 @@ This script requires superuser permission if the user who runs the git command d
 
 ### Usage
 
-  `fusig.sh [argument]`
+  `fusig.sh [options]`
   
     Options:
   
