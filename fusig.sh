@@ -119,7 +119,7 @@ fi
   exec 3>&1 1>>${FLOG} 2>&1
 	if  [[ $(whoami) = $CUSER ]]; then
   		if  [[ $branch = "master" ]]; then
-	 		util/composer.phar install
+	 		util/composer.phar install --no-dev
     			echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
   		else
     			bin/composer.phar install
@@ -127,7 +127,7 @@ fi
   		fi
 	else
 		if  [[ $branch = "master" ]]; then
-    			su $CUSER -s /bin/sh -c "util/composer.phar install"
+    			su $CUSER -s /bin/sh -c "util/composer.phar install --no-dev"
     			echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
   		else
     			su $CUSER -s /bin/sh -c "bin/composer.phar install"
