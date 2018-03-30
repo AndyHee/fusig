@@ -95,9 +95,9 @@ fi
   flock -e 200 #Set lock
 
   cd $FPATH
-
+  exec 3>&1 1>>${FLOG} 2>&1
   if  [[ $1 = "-B" ]]; then # update db structure
-    echo "Updating database. This may take some time..."
+    echo "Updating database. This may take some time..." 1>&3
     if  [[ $branch = "master" ]]; then
       /bin/sh -c "scripts/dbstructure.php update"
     else
@@ -106,26 +106,26 @@ fi
     exit 0
   fi
 
-  echo "Switching core to branch '$branch'..."
+  echo "Switching core to branch '$branch'..." 1>&3
   git checkout $branch | print
-  echo "Updating Friendica core..."
+  echo "Updating Friendica core..." 1>&3
   git pull
   cd $FPATH/addon
-  echo "Switching addons to branch '$branch'..."
+  echo "Switching addons to branch '$branch'..." 1>&3
   git checkout $branch | print
-  echo "Updating Friendica addons..."
+  echo "Updating Friendica addons..." 1>&3
   git pull
   cd ..
-  echo "Installing with composer..."
-  if  [[ $branch = "master" ]]; then
+  echo "Installing with composer..." 1>&3
+    if  [[ $branch = "master" ]]; then
     su $CUSER -s /bin/sh -c "util/composer.phar install"
-    echo "Git pull and util/composer.phar install successful at $(date)." >>$FLOG 2>&1
+    echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
   else
     su $CUSER -s /bin/sh -c "bin/composer.phar install"
-    echo "Git pull and bin/composer.phar install successful at $(date)." >>$FLOG 2>&1
+    echo "Git pull and bin/composer.phar install successful at $(date)." | tee /dev/fd/3
   fi
 
-  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))." >>$FLOG 2>&1
+  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))." | tee /dev/fd/3
 
 ) 200>${LOCKFILE}
 
