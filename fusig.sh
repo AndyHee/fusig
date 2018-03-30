@@ -95,9 +95,8 @@ fi
   flock -e 200 #Set lock
 
   cd $FPATH
-  exec 3>&1 1>>${FLOG} 2>&1
-  if  [[ $1 = "-B" ]]; then # update db structure
-    echo "Updating database. This may take some time..." 1>&3
+    if  [[ $1 = "-B" ]]; then # update db structure
+    echo "Updating database. This may take some time..."
     if  [[ $branch = "master" ]]; then
       /bin/sh -c "scripts/dbstructure.php update"
     else
@@ -106,17 +105,18 @@ fi
     exit 0
   fi
 
-  echo "Switching core to branch '$branch'..." 1>&3
+  echo "Switching core to branch '$branch'..."
   git checkout $branch | print
-  echo "Updating Friendica core..." 1>&3
+  echo "Updating Friendica core..."
   git pull
   cd $FPATH/addon
-  echo "Switching addons to branch '$branch'..." 1>&3
+  echo "Switching addons to branch '$branch'..."
   git checkout $branch | print
-  echo "Updating Friendica addons..." 1>&3
+  echo "Updating Friendica addons..."
   git pull
   cd ..
-  echo "Installing with composer..." 1>&3
+  echo "Installing with composer..."
+  exec 3>&1 1>>${FLOG} 2>&1
     if  [[ $branch = "master" ]]; then
     su $CUSER -s /bin/sh -c "util/composer.phar install"
     echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
