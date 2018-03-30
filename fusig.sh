@@ -20,7 +20,7 @@
 branch=develop # Set your branch, e.g. master or develop
 FPATH=/var/www/friendica # Set path to your Friendica installation. Ensure no trailing slash.
 CUSER=www-data # Set user that has permissions for the folder called "vendor".
-
+FLOG=/var/www/friendica/logs/friendica.log
 LOCKFILE=/tmp/fusig.lock # Alter this if you don't have permission for "/tmp".
 
 #	END OF CONFIGURATION
@@ -99,9 +99,9 @@ fi
   if  [[ $1 = "-B" ]]; then # update db structure
     echo "Updating database. This may take some time..."
     if  [[ $branch = "master" ]]; then
-      /bin/sh -c "php util/db_update.php"
-    else
       /bin/sh -c "scripts/dbstructure.php update"
+    else
+      /bin/sh -c "bin/console dbstructure update"
     fi
     exit 0
   fi
@@ -109,8 +109,6 @@ fi
   echo "Switching core to branch '$branch'..."
   git checkout $branch | print
   echo "Updating Friendica core..."
-  #git fetch upstream
-  #git merge upstream/$branch
   git pull
   cd $FPATH/addon
   echo "Switching addons to branch '$branch'..."
@@ -119,10 +117,15 @@ fi
   git pull
   cd ..
   echo "Installing with composer..."
-  su $CUSER -s /bin/sh -c "util/composer.phar install"
+  if  [[ $branch = "master" ]]; then
+    su $CUSER -s /bin/sh -c "util/composer.phar install"
+    echo "Git pull and util/composer.phar install successful at $(date)." >>$FLOG 2>&1
+  else
+    su $CUSER -s /bin/sh -c "bin/composer.phar install"
+    echo "Git pull and bin/composer.phar install successful at $(date)." >>$FLOG 2>&1
+  fi
 
-  echo "All done, $(date "+%a %d %b %T")"
-  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))."
+  echo "You're on Friendica ${bold}$(cat VERSION) ${normal}($(git log --oneline -n1 |cut -c 1-9))." >>$FLOG 2>&1
 
 ) 200>${LOCKFILE}
 
