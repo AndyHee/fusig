@@ -97,7 +97,7 @@ fi
   cd $FPATH
   if  [[ $1 = "-B" ]]; then # update db structure
     echo "Updating database. This may take some time..."
-    if  [[ $branch = "master" ]]; then
+    if  [[ $branch = "3.6" ]]; then
       /bin/sh -c "scripts/dbstructure.php update"
     else
       /bin/sh -c "bin/console dbstructure update"
@@ -118,7 +118,7 @@ fi
   echo "Installing with composer..."
   exec 3>&1 1>>${FLOG} 2>&1
 	if  [[ $(whoami) = $CUSER ]]; then
-  		if  [[ $branch = "master" ]]; then
+  		if  [[ $branch = "3.6" ]]; then
 	 		util/composer.phar install --no-dev
     			echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
   		else
@@ -126,7 +126,7 @@ fi
     			echo "Git pull and bin/composer.phar install successful at $(date)." | tee /dev/fd/3
   		fi
 	else
-		if  [[ $branch = "master" ]]; then
+		if  [[ $branch = "3.6" ]]; then
     			su $CUSER -s /bin/sh -c "util/composer.phar install --no-dev"
     			echo "Git pull and util/composer.phar install successful at $(date)." | tee /dev/fd/3
   		else
